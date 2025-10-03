@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running lint, unit tests and integration tests on the backend (/api)..."
+
+cd api || exit 1
+
+npm run lint || exit 1
+npm run test:unit || exit 1
+npm run test:integration || exit 1
+
+echo "Everything It's okay, commit passed successfully!"
