@@ -1,6 +1,6 @@
 import { AppException } from "./AppException";
 
-type Details = Record<string, string | object | number>
+type Details = Record<string, string | object | number>;
 
 export class AppHttpException extends AppException {
   public readonly statusCode: number;

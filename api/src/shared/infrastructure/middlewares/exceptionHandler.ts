@@ -2,12 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AppException } from "@/shared/domain/exceptions/AppException";
 import { AppHttpException } from "@/shared/domain/exceptions/AppHttpException";
 
-export function exceptionHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function exceptionHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
   console.error(err);
 
   if (err instanceof AppHttpException) {
@@ -26,7 +21,6 @@ export function exceptionHandler(
     });
   }
 
-  
   return res.status(500).json({
     error: "InternalServerError",
     message: "Unexpected error",
