@@ -17,11 +17,20 @@
   "author": "emanuelvasconnobre",
   "license": "ISC",
   "dependencies": {
+    "@types/morgan": "^1.9.10",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "morgan": "^1.10.1",
     "winston": "^3.18.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/hpp": "^0.2.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.6.2",
     "@types/supertest": "^6.0.3",
