@@ -2,7 +2,7 @@ import { app } from "@/app/server";
 import envSettings from "@/config/env";
 import makeLoggerInstance from "./shared/infrastructure/logger";
 
-const logger = makeLoggerInstance("server")
+const logger = makeLoggerInstance("server");
 
 app.listen(envSettings.port, () => {
   if (envSettings.nodeEnv === "development") {

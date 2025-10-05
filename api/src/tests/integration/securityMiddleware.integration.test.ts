@@ -10,9 +10,7 @@ describe("Security Middlewares", () => {
   });
 
   it("should block disallowed origins via CORS", async () => {
-    const res = await request(app)
-      .get("/health/liveness")
-      .set("Origin", "https://malicious.com");
+    const res = await request(app).get("/health/liveness").set("Origin", "https://malicious.com");
     expect(res.status).toBe(200);
   });
 

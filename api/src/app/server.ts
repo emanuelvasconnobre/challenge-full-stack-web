@@ -8,8 +8,8 @@ import setupHttpLogMiddleware from "@/shared/infrastructure/middlewares/loggerMi
 const app = express();
 
 app.use(express.json());
-setupHttpLogMiddleware(app)
-setupSecurityMiddleware(app)
+setupHttpLogMiddleware(app);
+setupSecurityMiddleware(app);
 app.use(exceptionHandler);
 
 registerRoutes(app);
