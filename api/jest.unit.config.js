@@ -13,7 +13,7 @@ module.exports = {
     "<rootDir>/src/**/tests/unit/**/*.test.ts",
   ],
 
-  collectCoverageFrom: ["src/**/*Service.ts"],
+  collectCoverageFrom: ["src/**/*Service.ts", "src/**/use-cases/*.ts"],
 
   coverageDirectory: "<rootDir>/coverage",
   coverageReporters: ["text", "lcov"],
