@@ -17,6 +17,7 @@
   "author": "emanuelvasconnobre",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.16.3",
     "@types/morgan": "^1.9.10",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -41,6 +42,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "jest": "^30.2.0",
     "prettier": "^3.6.2",
+    "prisma": "^6.16.3",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.4",
     "ts-node-dev": "^2.0.0",
