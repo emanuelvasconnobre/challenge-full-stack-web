@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="background" flat class="border-b">
+  <v-app-bar app class="border-b" color="background" flat>
     <v-toolbar-title class="text-h6 font-weight-medium">
       {{ projectName }}
     </v-toolbar-title>
@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from "vuetify";
 import { computed } from "vue";
+import { useTheme } from "vuetify";
 
 const projectName = "+A Educação Tech - Teste Técnico";
 
