@@ -1,19 +1,28 @@
-/**
- * plugins/vuetify.ts
- *
- * Framework documentation: https://vuetifyjs.com`
- */
+import { createVuetify } from "vuetify";
+import "@mdi/font/css/materialdesignicons.css";
 
-// Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "vuetify/styles";
 
-// Composables
-import { createVuetify } from 'vuetify'
-
-// https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: 'system',
+    defaultTheme: "dark",
+    themes: {
+      light: {
+        colors: {
+          primary: "#1976D2",
+          secondary: "#424242",
+          surface: "#F5F5F5",
+          background: "#FFFFFF",
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#2196F3",
+          secondary: "#03DAC6",
+          surface: "#000000",
+          background: "#121212",
+        },
+      },
+    },
   },
-})
+});
