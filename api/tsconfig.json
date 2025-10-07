@@ -4,11 +4,13 @@
     "module": "CommonJS",
     "rootDir": "src",
     "outDir": "dist",
+    "typeRoots": ["./src/shared/types", "./node_modules/@types"],
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@prisma-test/client": ["node_modules/.prisma-test/client"]
     }
   }
 }
