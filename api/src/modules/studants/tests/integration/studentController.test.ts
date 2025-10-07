@@ -26,7 +26,7 @@ describe("StudentController (Integration)", () => {
     id: undefined,
     name: "Test",
     email: "test@test.com",
-    cpf: "999.999.999-99",
+    cpf: "321.515.243-61",
     RA: "2392993223",
   };
 

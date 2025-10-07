@@ -2,6 +2,12 @@ import { app } from "@/app/server";
 import envSettings from "@/config/env";
 import request from "supertest";
 
+beforeEach(() => {
+  jest.resetModules();
+
+  process.env["RATE_LIMIT_MAX"] = "5";
+});
+
 describe("Security Middlewares", () => {
   it("should include Helmet headers", async () => {
     const res = await request(app).get("/health/liveness");

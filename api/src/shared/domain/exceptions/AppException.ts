@@ -1,8 +1,8 @@
 export class AppException extends Error {
   public readonly name: string;
-  public readonly details?: any;
+  public readonly details?: object;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: object) {
     super(message);
     this.name = this.constructor.name;
     this.details = details;

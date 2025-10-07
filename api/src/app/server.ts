@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import express from "express";
 
 import { registerRoutes } from "./routes";
@@ -10,8 +12,9 @@ const app = express();
 app.use(express.json());
 setupHttpLogMiddleware(app);
 setupSecurityMiddleware(app);
-app.use(exceptionHandler);
 
 registerRoutes(app);
+
+app.use(exceptionHandler);
 
 export { app };

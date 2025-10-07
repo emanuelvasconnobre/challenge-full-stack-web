@@ -1,10 +1,10 @@
 import Student from "@/modules/studants/domain/entities/Student";
 import IStudentRepository from "@/modules/studants/domain/repositories/IStudentRepository";
+import { AppHttpException } from "@/shared/domain/exceptions/AppHttpException";
 import { AppPrismaClient } from "@/shared/infrastructure/db/prisma/prismaClient";
+import BusinessRuleException from "@/shared/infrastructure/exceptions/BusinessRuleException";
 import DatabaseException from "@/shared/infrastructure/exceptions/DatabaseException";
 import makeLoggerInstance from "@/shared/infrastructure/logger";
-
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export default class PrismaStudentRepositoryImpl implements IStudentRepository {
   private readonly logger = makeLoggerInstance("PrismaStudentRepositoryImpl");
@@ -19,9 +19,7 @@ export default class PrismaStudentRepositoryImpl implements IStudentRepository {
 
       return newEntity;
     } catch (e) {
-      this.catchErrorHandler(e);
-
-      throw new DatabaseException({ stack: e });
+      throw this.catchErrorHandler(e);
     }
   }
 
@@ -33,9 +31,7 @@ export default class PrismaStudentRepositoryImpl implements IStudentRepository {
 
       return entity;
     } catch (e) {
-      this.catchErrorHandler(e);
-
-      throw new DatabaseException({ stack: e });
+      throw this.catchErrorHandler(e);
     }
   }
 
@@ -45,9 +41,7 @@ export default class PrismaStudentRepositoryImpl implements IStudentRepository {
 
       return entities;
     } catch (e) {
-      this.catchErrorHandler(e);
-
-      throw new DatabaseException({ stack: e });
+      throw this.catchErrorHandler(e);
     }
   }
 
@@ -62,9 +56,7 @@ export default class PrismaStudentRepositoryImpl implements IStudentRepository {
 
       return entity;
     } catch (e) {
-      this.catchErrorHandler(e);
-
-      throw new DatabaseException({ stack: e });
+      throw this.catchErrorHandler(e);
     }
   }
 
@@ -76,19 +68,65 @@ export default class PrismaStudentRepositoryImpl implements IStudentRepository {
         },
       });
     } catch (e) {
-      this.catchErrorHandler(e);
-
-      throw new DatabaseException({ stack: e });
+      throw this.catchErrorHandler(e);
     }
   }
 
   private catchErrorHandler(error: any) {
     this.logger.error(error);
-    if (error instanceof PrismaClientKnownRequestError) {
-      throw new DatabaseException({
-        message: error.message,
-        stack: error.stack,
+    if (error?.constructor?.name === "PrismaClientKnownRequestError") {
+      const validationErrors: {
+        fieldName: string;
+        messages: object;
+      }[] = [];
+
+      switch (error.code) {
+        // UNIQUE constraint
+        case "P2002": {
+          const fields = (error.meta?.target as string[]) || ["unknown"];
+          for (const field of fields) {
+            validationErrors.push({
+              fieldName: field,
+              messages: {
+                unique: `${field} is already registered in the system`,
+              },
+            });
+          }
+          break;
+        }
+
+        // FOREIGN KEY constraint
+        case "P2003": {
+          const field = String(error.meta?.field_name ?? "unknown");
+          validationErrors.push({
+            fieldName: field,
+            messages: {
+              foreignKey: `${field} references a non-existing entity`,
+            },
+          });
+          break;
+        }
+
+        // Entity not found
+        case "P2025": {
+          validationErrors.push({
+            fieldName: "id",
+            messages: {
+              notFound: "The requested entity was not found in the system",
+            },
+          });
+          break;
+        }
+      }
+
+      const appException = new BusinessRuleException({
+        message: "Database business rule violation",
+        validatioeErrors: validationErrors,
       });
+
+      throw new AppHttpException(appException.message, 400, { ...appException.details });
     }
+
+    throw new DatabaseException();
   }
 }
