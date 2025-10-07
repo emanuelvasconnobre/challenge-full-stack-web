@@ -46,13 +46,13 @@ describe("StudentController (Integration)", () => {
     await prisma.$disconnect();
   });
 
-  it("should get all students successfully", async () => {
+  it("should return 200 on GET /students", async () => {
     const response = await request(app).get("/students").send().expect(200);
 
     expect(response.body).toBeInstanceOf(Array);
   });
 
-  it("should create a student successfully", async () => {
+  it("should return 201 on POST /students", async () => {
     const response = await request(app)
       .post("/students")
       .send({
@@ -67,13 +67,13 @@ describe("StudentController (Integration)", () => {
     mockData.id = response.body.id;
   });
 
-  it("should get one student successfully", async () => {
+  it("should return 200 on GET /students/:id", async () => {
     const response = await request(app).get(`/students/${mockData.id}`).send().expect(200);
 
     expect(response.body.name).toBe("Test");
   });
 
-  it("should update a student successfully", async () => {
+  it("should return 200 on PUT /students/:id", async () => {
     const newEmail = `updated+${mockData.email}`;
 
     const response = await request(app)
@@ -86,7 +86,7 @@ describe("StudentController (Integration)", () => {
     expect(response.body.email).toBe(newEmail);
   });
 
-  it("should delete a student successfully", async () => {
+  it("should return 200 on DELETE /students/:id", async () => {
     const response = await request(app).delete(`/students/${mockData.id}`).send().expect(200);
 
     expect(response.body).toBe("");
