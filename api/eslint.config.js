@@ -11,7 +11,7 @@ module.exports = defineConfig([
   {
     basePath: ".",
     files: ["**/*.ts"],
-    ignores: ["dist", "node_modules", "coverage", "generated/**/*"],
+    ignores: ["dist", "node_modules", "coverage", "generated/**/*", "src/shared/types/*"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {

@@ -1,12 +1,12 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { Request, Response, NextFunction } from "express";
 
 import ValidationException from "../exceptions/ValidationException";
+import { NextFunction, Request, Response } from "express";
 
-export default function validateDTOMiddleware(DTOClass: any) {
+export default function validateDTOMiddleware(DTOClass: any, target: "body" | "query" = "body") {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const dto = plainToInstance(DTOClass, req.body);
+    const dto = plainToInstance(DTOClass, req[target]);
     const errors = await validate(dto, {
       forbidUnknownValues: true,
       forbidNonWhitelisted: true,
@@ -20,14 +20,14 @@ export default function validateDTOMiddleware(DTOClass: any) {
         .flat();
 
       const exception = new ValidationException({
-        message: "Validation failed",
+        message: `Validation failed (Request ${target.toUpperCase()})`,
         validatioeErrors: messages,
       });
 
       return res.status(400).json(exception);
     }
 
-    req.body = dto;
+    req.dtoInstance = dto;
     next();
   };
 }

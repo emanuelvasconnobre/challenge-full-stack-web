@@ -4,6 +4,9 @@ import makeUpdateStudent from "../../application/factories/makeUpdateStudent";
 import makeFindOneStudent from "../../application/factories/makeFindOneStudent";
 import makeFindManyStudent from "../../application/factories/makeFindManyStudent";
 import makeDeleteStudent from "../../application/factories/makeDeleteStudent";
+import type { GetManyStudentDTO } from "../dtos/GetManyStudentDTO";
+import type { UpdateStudentDTO } from "../dtos/UpdateStudentDTO";
+import type { CreateStudentDTO } from "../dtos/CreateStudentDTO";
 
 export class StudentController {
   constructor(
@@ -15,7 +18,7 @@ export class StudentController {
   ) {}
 
   async createNewStudent(req: Request, res: Response) {
-    const result = await this.createStudentUsecase.execute(req.body);
+    const result = await this.createStudentUsecase.execute(req.dtoInstance as CreateStudentDTO);
 
     return res.status(201).json(result);
   }
@@ -29,13 +32,26 @@ export class StudentController {
   }
 
   async getManyStudents(req: Request, res: Response) {
-    const result = await this.findManyStudentUsecase.execute();
+    const { page, pageSize, orderBy, orderType, ...attributes } =
+      req.dtoInstance as GetManyStudentDTO;
+    const result = await this.findManyStudentUsecase.execute({
+      attributes,
+      page,
+      pageSize,
+      order: {
+        attribute: orderBy,
+        type: orderType,
+      },
+    });
 
     return res.status(200).json(result);
   }
 
   async updateStudents(req: Request, res: Response) {
-    const result = await this.updateStudentUsecase.execute({ id: req.params.id, ...req.body });
+    const result = await this.updateStudentUsecase.execute({
+      id: req.params.id,
+      ...(req.dtoInstance as UpdateStudentDTO),
+    });
 
     return res.status(200).json(result);
   }

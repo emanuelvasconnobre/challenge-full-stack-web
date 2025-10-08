@@ -49,7 +49,7 @@ describe("StudentController (Integration)", () => {
   it("should return 200 on GET /students", async () => {
     const response = await request(app).get("/students").send().expect(200);
 
-    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body.items).toBeInstanceOf(Array);
   });
 
   it("should return 201 on POST /students", async () => {

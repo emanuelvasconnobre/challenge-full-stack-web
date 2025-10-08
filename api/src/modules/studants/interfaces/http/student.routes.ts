@@ -3,11 +3,14 @@ import { StudentController } from "./StudentController";
 import validateDTOMiddleware from "@/shared/infrastructure/middlewares/validateDTOMiddleware";
 import { CreateStudentDTO } from "../dtos/CreateStudentDTO";
 import { UpdateStudentDTO } from "../dtos/UpdateStudentDTO";
+import { GetManyStudentDTO } from "../dtos/GetManyStudentDTO";
 
 const studentRouter = Router();
 const controller = new StudentController();
 
-studentRouter.get("/", (req, res) => controller.getManyStudents(req, res));
+studentRouter.get("/", validateDTOMiddleware(GetManyStudentDTO, "query"), (req, res) =>
+  controller.getManyStudents(req, res),
+);
 studentRouter.post("/", validateDTOMiddleware(CreateStudentDTO), (req, res) =>
   controller.createNewStudent(req, res),
 );
