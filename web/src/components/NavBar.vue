@@ -25,6 +25,6 @@ const theme = useTheme();
 const currentTheme = computed(() => theme.global.name.value);
 
 function toggleTheme() {
-  theme.global.name.value = currentTheme.value === "light" ? "dark" : "light";
+  theme.change(currentTheme.value === "light" ? "dark" : "light");
 }
 </script>
