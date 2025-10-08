@@ -32,7 +32,7 @@ services:
       context: ./web
       dockerfile: Dockerfile.prod
     ports:
-      - "3000:3000"
+      - "3000:80"
     environment:
       - NODE_ENV=production
     restart: no

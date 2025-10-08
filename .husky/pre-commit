@@ -9,4 +9,12 @@ npm run lint || exit 1
 npm run test:unit || exit 1
 npm run test:integration || exit 1
 
-echo "Everything It's okay, commit passed successfully!"
+echo "Everything It's okay on the backend!"
+
+cd ../web || exit 1
+
+npm run lint || exit 1
+
+echo "Everything It's okay on the frontend!"
+
+echo "commit passed successfully!"

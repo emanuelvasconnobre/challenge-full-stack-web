@@ -23,7 +23,6 @@ services:
     volumes:
       - mais-a-educacao-db-data:/var/lib/postgresql/data
 
-
   backend_prisma_migration:
     build:
       context: ./api

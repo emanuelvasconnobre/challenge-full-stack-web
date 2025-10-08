@@ -1,0 +1,8 @@
+Dockerfile*
+.gitignore
+.git
+dist
+node_modules
+logs
+coverage
+docker
