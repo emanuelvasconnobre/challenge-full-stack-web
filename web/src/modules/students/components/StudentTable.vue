@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type Student from "@/modules/shared/interfaces/entities/Student";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import formatDate from "@/utils/formatDate";
 
 type StudentView = {
@@ -62,6 +62,27 @@ function handleSort({
     props.onSortChange(sortBy[0]!.key, type);
   }
 }
+
+const showDialog = ref(false);
+const selectedStudent = ref<Student | null>(null);
+
+function confirmDelete(id: string) {
+  selectedStudent.value = props.students.find((item) => item.id === id)!;
+  showDialog.value = true;
+}
+
+function handleConfirm() {
+  if (selectedStudent.value) {
+    props.onDelete(selectedStudent.value.id);
+  }
+  showDialog.value = false;
+  selectedStudent.value = null;
+}
+
+function handleCancel() {
+  showDialog.value = false;
+  selectedStudent.value = null;
+}
 </script>
 
 <template>
@@ -71,6 +92,7 @@ function handleSort({
     :headers="headers"
     :items="convertInView(props.students)"
     :items-per-page="props.pageSize"
+    :items-per-page-options="[10, 25, 50, 100]"
     :loading="loading"
     :server-items-length="props.total"
     :sort-desc="props.order.type === 'desc'"
@@ -79,9 +101,22 @@ function handleSort({
     @update:sort-by="(sortBy) => handleSort({ sortBy, sortDesc: props.order.type === 'desc' })"
   >
     <template #item.actions="{ item }">
-      <v-btn color="red" icon @click="props.onDelete(item.id)">
+      <v-btn color="red" icon @click="confirmDelete(item.id)">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </template>
   </v-data-table>
+
+  <v-dialog v-model="showDialog" max-width="400">
+    <v-card color="background">
+      <v-card-title class="text-h6"> Do you confirm to remove this student? </v-card-title>
+
+      <v-card-text> Once removed It is not possible to recover this student data. </v-card-text>
+
+      <v-card-actions class="justify-end">
+        <v-btn color="grey" variant="text" @click="handleCancel">Cancel</v-btn>
+        <v-btn color="red" variant="flat" @click="handleConfirm">Delete</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>

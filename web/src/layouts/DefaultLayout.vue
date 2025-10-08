@@ -7,6 +7,7 @@
         <NavBar />
         <v-main>
           <v-container fluid>
+            <ToastContainer />
             <router-view />
           </v-container>
         </v-main>
@@ -18,4 +19,5 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
 import SideBar from "@/components/SideBar.vue";
+import ToastContainer from "@/modules/shared/components/ToastContainer.vue";
 </script>

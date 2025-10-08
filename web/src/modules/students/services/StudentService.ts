@@ -32,3 +32,16 @@ export async function getStudents(
     return new Result({ error, success: false });
   }
 }
+
+export async function deleteStudent(id: string): Promise<Result> {
+  try {
+    const res = await fetch(`${API_URL}/students/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    return new Result({ data });
+  } catch (error) {
+    return new Result({ error, success: false });
+  }
+}

@@ -1,6 +1,7 @@
 import type Student from "@/modules/shared/interfaces/entities/Student";
 import { onMounted, ref } from "vue";
-import { getStudents } from "../services/StudentService";
+import { useToast } from "@/modules/shared/composable/useToast";
+import { deleteStudent, getStudents } from "../services/StudentService";
 
 export function useStudents() {
   const students = ref<Student[]>([]);
@@ -13,6 +14,8 @@ export function useStudents() {
     attribute: "createdAt",
     type: "asc",
   });
+
+  const { showToast } = useToast();
 
   async function fetchStudents() {
     loading.value = true;
@@ -29,23 +32,34 @@ export function useStudents() {
         students.value = result.data.items;
         total.value = result.data.total;
         totalPages.value = result.data.totalPages;
+        showToast("Student was deleted successfully!", "success");
       } else {
         students.value = [];
         total.value = 0;
-        // TODO: show a toast warning
+        showToast("An error occured when trying to get student data!", "error");
       }
-    } catch {
-      students.value = [];
-      total.value = 0;
-      // TODO: show a toast error
     } finally {
       loading.value = false;
     }
   }
 
   async function removeStudent(id: string) {
-    // TODO: call delete API
-    students.value = students.value.filter((s) => s.id !== id);
+    loading.value = true;
+
+    try {
+      const result = await deleteStudent(id);
+
+      if (result.success) {
+        students.value = students.value.filter((s) => s.id !== id);
+        showToast("Student was deleted successfully!", "success");
+      } else {
+        students.value = [];
+        total.value = 0;
+        showToast("An error occured when trying to delete student!", "error");
+      }
+    } finally {
+      loading.value = false;
+    }
   }
 
   function setPage(newPage: number) {
