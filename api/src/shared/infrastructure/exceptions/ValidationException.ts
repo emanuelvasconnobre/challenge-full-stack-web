@@ -8,7 +8,7 @@ export default class ValidationException extends AppException {
       messages: object | {};
     }[];
   }) {
-    super(options.message ?? "Business Rule Validation Error", {
+    super(options.message ?? "Validation Error", {
       errors: options.validatioeErrors,
     });
   }

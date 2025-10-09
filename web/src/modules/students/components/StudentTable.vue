@@ -30,8 +30,8 @@ const props = defineProps<{
   pageSize: number;
   order: { attribute: string; type: "asc" | "desc" };
   loading: boolean;
-  onDelete: (id: string) => void;
-  onEdit: (id: string, data: StudentEditableAttributes) => void;
+  onDelete: (id: string) => Promise<void>;
+  onEdit: (id: string, data: StudentEditableAttributes) => Promise<void>;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   onSortChange: (attribute: string, type: "asc" | "desc") => void;
@@ -75,9 +75,9 @@ function confirmDelete(id: string) {
   showDeleteModal.value = true;
 }
 
-function handleConfirm() {
+async function handleConfirm() {
   if (selectedStudent.value) {
-    props.onDelete(selectedStudent.value.id);
+    await props.onDelete(selectedStudent.value.id);
   }
   showDeleteModal.value = false;
   selectedStudent.value = null;
@@ -93,9 +93,9 @@ function openEditModal(id: string) {
   showEditModal.value = true;
 }
 
-function handleEditSave(updatedData: StudentEditableAttributes) {
+async function handleEditSave(updatedData: StudentEditableAttributes) {
   if (selectedStudent.value) {
-    props.onEdit(selectedStudent.value.id, updatedData);
+    await props.onEdit(selectedStudent.value.id, updatedData);
   }
   showEditModal.value = false;
   selectedStudent.value = null;

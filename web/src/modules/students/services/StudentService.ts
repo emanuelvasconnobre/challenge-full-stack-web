@@ -3,6 +3,7 @@ import type UpdateStudentDTO from "./dtos/UpdateStudentDTO";
 import type Student from "@/modules/shared/interfaces/entities/Student";
 import type { PaginatedResult } from "@/modules/shared/interfaces/Pagination";
 import getEnvSettings from "@/config/env";
+import ValidationException from "@/modules/shared/exceptions/ValidationException";
 import Result from "@/modules/shared/interfaces/Result";
 
 const envSettings = getEnvSettings();
@@ -39,11 +40,36 @@ export async function deleteStudent(id: string): Promise<Result> {
     const res = await fetch(`${API_URL}/students/${id}`, {
       method: "DELETE",
     });
-    const data = await res.json();
 
-    return new Result({ data });
+    if (!res.ok) {
+      const data = await res.json();
+      switch (res.status) {
+        case 400: {
+          return new Result({
+            error: new ValidationException({
+              validationErrors: (data as ValidationException).details.errors,
+            }),
+            success: false,
+          });
+        }
+
+        default: {
+          console.log(res);
+          return new Result({
+            error: new Error("Unexpected error"),
+            success: false,
+          });
+        }
+      }
+    }
+
+    return new Result();
   } catch (error) {
-    return new Result({ error, success: false });
+    console.log(error);
+    return new Result({
+      error: new Error(`Unexpected error: ${error}`),
+      success: false,
+    });
   }
 }
 
@@ -56,10 +82,36 @@ export async function updateStudent(id: string, dto: UpdateStudentDTO = {}): Pro
       body: JSON.stringify(dto),
       method: "PUT",
     });
-    const data = await res.json();
 
+    if (!res.ok) {
+      const data = await res.json();
+      switch (res.status) {
+        case 400: {
+          return new Result({
+            error: new ValidationException({
+              validationErrors: (data as ValidationException).details.errors,
+            }),
+            success: false,
+          });
+        }
+
+        default: {
+          console.log(data);
+          return new Result({
+            error: new Error("Unexpected error"),
+            success: false,
+          });
+        }
+      }
+    }
+
+    const data: ValidationException = await res.json();
     return new Result({ data });
   } catch (error) {
-    return new Result({ error, success: false });
+    console.log(error);
+    return new Result({
+      error: new Error(`Unexpected error: ${error}`),
+      success: false,
+    });
   }
 }

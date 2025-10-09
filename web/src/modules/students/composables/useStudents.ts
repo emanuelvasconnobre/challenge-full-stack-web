@@ -46,34 +46,33 @@ export function useStudents() {
   async function removeStudent(id: string) {
     loading.value = true;
 
-    try {
-      const result = await deleteStudent(id);
+    const result = await deleteStudent(id);
 
-      if (result.success) {
-        students.value = students.value.filter((s) => s.id !== id);
-        showToast("Student was deleted successfully!", "success");
-      } else {
-        showToast("An error occured when trying to delete student!", "error");
-      }
-    } finally {
-      loading.value = false;
+    if (result.success) {
+      students.value = students.value.filter((s) => s.id !== id);
+      showToast("Student was deleted successfully!", "success");
+    } else {
+      showToast("An error occured when trying to delete student!", "error");
     }
+    loading.value = false;
+
+    return result;
   }
 
   async function editStudent(id: string, data: UpdateStudentDTO) {
     loading.value = true;
-    try {
-      const result = await updateStudent(id, data);
+    const result = await updateStudent(id, data);
 
-      if (result.success) {
-        showToast("Student was updated successfully!", "success");
-        await fetchStudents();
-      } else {
-        showToast("An error occured when trying to update student!", "error");
-      }
-    } finally {
-      loading.value = false;
+    if (result.success) {
+      showToast("Student was updated successfully!", "success");
+      await fetchStudents();
+    } else {
+      showToast("An error occured when trying to update student!", "error");
     }
+
+    loading.value = false;
+
+    return result;
   }
 
   function setPage(newPage: number) {
