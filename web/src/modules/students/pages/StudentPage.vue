@@ -6,6 +6,7 @@ const {
   students,
   loading,
   removeStudent,
+  editStudent,
   page,
   pageSize,
   total,
@@ -23,6 +24,7 @@ const {
     <StudentTable
       :loading="loading"
       :on-delete="removeStudent"
+      :on-edit="editStudent"
       :on-page-change="setPage"
       :on-page-size-change="setPageSize"
       :on-sort-change="setOrder"

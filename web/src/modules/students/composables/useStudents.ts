@@ -1,7 +1,8 @@
+import type UpdateStudentDTO from "../services/dtos/UpdateStudentDTO";
 import type Student from "@/modules/shared/interfaces/entities/Student";
 import { onMounted, ref } from "vue";
 import { useToast } from "@/modules/shared/composable/useToast";
-import { deleteStudent, getStudents } from "../services/StudentService";
+import { deleteStudent, getStudents, updateStudent } from "../services/StudentService";
 
 export function useStudents() {
   const students = ref<Student[]>([]);
@@ -32,7 +33,6 @@ export function useStudents() {
         students.value = result.data.items;
         total.value = result.data.total;
         totalPages.value = result.data.totalPages;
-        showToast("Student was deleted successfully!", "success");
       } else {
         students.value = [];
         total.value = 0;
@@ -53,9 +53,23 @@ export function useStudents() {
         students.value = students.value.filter((s) => s.id !== id);
         showToast("Student was deleted successfully!", "success");
       } else {
-        students.value = [];
-        total.value = 0;
         showToast("An error occured when trying to delete student!", "error");
+      }
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function editStudent(id: string, data: UpdateStudentDTO) {
+    loading.value = true;
+    try {
+      const result = await updateStudent(id, data);
+
+      if (result.success) {
+        showToast("Student was updated successfully!", "success");
+        await fetchStudents();
+      } else {
+        showToast("An error occured when trying to update student!", "error");
       }
     } finally {
       loading.value = false;
@@ -89,6 +103,7 @@ export function useStudents() {
     order,
     fetchStudents,
     removeStudent,
+    editStudent,
     setPage,
     setPageSize,
     setOrder,

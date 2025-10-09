@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type Student from "@/modules/shared/interfaces/entities/Student";
+import type StudentEditableAttributes from "@/modules/shared/interfaces/object-values/StudentEditableAttributes";
 import { computed, ref } from "vue";
 import formatDate from "@/utils/formatDate";
+import StudentEditModal from "./StudentEditModal.vue";
 
 type StudentView = {
   id: string;
@@ -29,6 +31,7 @@ const props = defineProps<{
   order: { attribute: string; type: "asc" | "desc" };
   loading: boolean;
   onDelete: (id: string) => void;
+  onEdit: (id: string, data: StudentEditableAttributes) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   onSortChange: (attribute: string, type: "asc" | "desc") => void;
@@ -63,24 +66,38 @@ function handleSort({
   }
 }
 
-const showDialog = ref(false);
+const showDeleteModal = ref(false);
+const showEditModal = ref(false);
 const selectedStudent = ref<Student | null>(null);
 
 function confirmDelete(id: string) {
   selectedStudent.value = props.students.find((item) => item.id === id)!;
-  showDialog.value = true;
+  showDeleteModal.value = true;
 }
 
 function handleConfirm() {
   if (selectedStudent.value) {
     props.onDelete(selectedStudent.value.id);
   }
-  showDialog.value = false;
+  showDeleteModal.value = false;
   selectedStudent.value = null;
 }
 
 function handleCancel() {
-  showDialog.value = false;
+  showDeleteModal.value = false;
+  selectedStudent.value = null;
+}
+
+function openEditModal(id: string) {
+  selectedStudent.value = props.students.find((item) => item.id === id)!;
+  showEditModal.value = true;
+}
+
+function handleEditSave(updatedData: StudentEditableAttributes) {
+  if (selectedStudent.value) {
+    props.onEdit(selectedStudent.value.id, updatedData);
+  }
+  showEditModal.value = false;
   selectedStudent.value = null;
 }
 </script>
@@ -101,13 +118,16 @@ function handleCancel() {
     @update:sort-by="(sortBy) => handleSort({ sortBy, sortDesc: props.order.type === 'desc' })"
   >
     <template #item.actions="{ item }">
+      <v-btn color="blue" icon @click="openEditModal(item.id)">
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
       <v-btn color="red" icon @click="confirmDelete(item.id)">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </template>
   </v-data-table>
 
-  <v-dialog v-model="showDialog" max-width="400">
+  <v-dialog v-model="showDeleteModal" max-width="400">
     <v-card color="background">
       <v-card-title class="text-h6"> Do you confirm to remove this student? </v-card-title>
 
@@ -119,4 +139,6 @@ function handleCancel() {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <StudentEditModal v-model="showEditModal" :on-save="handleEditSave" :student="selectedStudent" />
 </template>

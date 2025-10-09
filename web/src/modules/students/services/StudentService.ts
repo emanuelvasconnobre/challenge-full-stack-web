@@ -1,4 +1,5 @@
 import type GetManyStudentDTO from "./dtos/GetManyStudentDTO";
+import type UpdateStudentDTO from "./dtos/UpdateStudentDTO";
 import type Student from "@/modules/shared/interfaces/entities/Student";
 import type { PaginatedResult } from "@/modules/shared/interfaces/Pagination";
 import getEnvSettings from "@/config/env";
@@ -37,6 +38,23 @@ export async function deleteStudent(id: string): Promise<Result> {
   try {
     const res = await fetch(`${API_URL}/students/${id}`, {
       method: "DELETE",
+    });
+    const data = await res.json();
+
+    return new Result({ data });
+  } catch (error) {
+    return new Result({ error, success: false });
+  }
+}
+
+export async function updateStudent(id: string, dto: UpdateStudentDTO = {}): Promise<Result> {
+  try {
+    const res = await fetch(`${API_URL}/students/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dto),
+      method: "PUT",
     });
     const data = await res.json();
 
