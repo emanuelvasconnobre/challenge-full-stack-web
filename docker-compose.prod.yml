@@ -1,0 +1,41 @@
+name: mais-a-educacao-challenge
+services:
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/liveness"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  db:
+    image: postgres:17.6-alpine3.21
+    ports:
+      - '${DB_SERVER_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-strongpassword}
+      POSTGRES_DB: ${DB_DATABASE:-mais-a-educacao}
+    volumes:
+      - mais-a-educacao-db-data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    restart: no
+
+volumes:
+  mais-a-educacao-db-data:
