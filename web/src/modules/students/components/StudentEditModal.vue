@@ -93,7 +93,7 @@ async function handleSubmit() {
             :error-messages="formInputErrors.email"
             label="Email"
             required
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.email]"
           />
         </v-form>
       </v-card-text>

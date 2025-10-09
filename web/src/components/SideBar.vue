@@ -41,7 +41,7 @@ const links = [
     title: "Home",
   },
   {
-    to: "students",
+    to: "/students",
     icon: "mdi-star-circle-outline",
     description: "Go to students page.",
     title: "Students",

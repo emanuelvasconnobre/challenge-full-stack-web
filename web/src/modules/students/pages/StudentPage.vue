@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type StudentEditableAttributes from "@/modules/shared/interfaces/object-values/StudentEditableAttributes";
+import { useRouter } from "vue-router";
 import StudentTable from "../components/StudentTable.vue";
 import { useStudents } from "../composables/useStudents";
 
@@ -16,6 +17,7 @@ const {
   setPageSize,
   setOrder,
 } = useStudents();
+const router = useRouter();
 
 async function onEditHandler(id: string, data: StudentEditableAttributes) {
   const result = await editStudent(id, data);
@@ -36,7 +38,16 @@ async function onDeleteHandler(id: string) {
 
 <template>
   <v-container>
-    <h1>Students</h1>
+    <v-container>
+      <v-row justify="space-between">
+        <v-col cols="auto">
+          <h1 class="text-h5 font-weight-medium">Students</h1>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn color="primary" @click="router.push('/students/insert')"> New student </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <StudentTable
       :loading="loading"

@@ -1,8 +1,14 @@
+import type CreateStudentDTO from "../services/dtos/CreateStudentDTO";
 import type UpdateStudentDTO from "../services/dtos/UpdateStudentDTO";
 import type Student from "@/modules/shared/interfaces/entities/Student";
 import { onMounted, ref } from "vue";
 import { useToast } from "@/modules/shared/composable/useToast";
-import { deleteStudent, getStudents, updateStudent } from "../services/StudentService";
+import {
+  deleteStudent,
+  getStudents,
+  insertStudent,
+  updateStudent,
+} from "../services/StudentService";
 
 export function useStudents() {
   const students = ref<Student[]>([]);
@@ -75,6 +81,21 @@ export function useStudents() {
     return result;
   }
 
+  async function createStudent(data: CreateStudentDTO) {
+    loading.value = true;
+    const result = await insertStudent(data);
+
+    if (result.success) {
+      showToast("Student was inserted successfully!", "success");
+    } else {
+      showToast("An error occured when trying to insert student!", "error");
+    }
+
+    loading.value = false;
+
+    return result;
+  }
+
   function setPage(newPage: number) {
     page.value = newPage;
     fetchStudents();
@@ -103,6 +124,7 @@ export function useStudents() {
     fetchStudents,
     removeStudent,
     editStudent,
+    createStudent,
     setPage,
     setPageSize,
     setOrder,
